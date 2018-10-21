@@ -3,7 +3,7 @@
 
 # Grabs frames from a video source
 # Detects faces in the frames using code from https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
-# Validats faces with Amazon Rekognition
+# Validates faces with Amazon Rekognition
 # If probability of match high enough then find if the door should be opened for this person
 
 import os
@@ -71,7 +71,7 @@ class DoorController:
     def openDoorIfUserValid(self, userName):
         userIdx = self.getUserIdx(userName)
         if userIdx == -1:
-            logging.info(f"openDoorIfUserValid: User Is Not Valid, username = {username}")
+            logging.info(f"openDoorIfUserValid: User Is Not Valid, username = {userName}")
             return False
         try:
             r = requests.get(self.doorUrl + "/u//" + str(userIdx) + "/" + self.users[userIdx].get("pin",""))
