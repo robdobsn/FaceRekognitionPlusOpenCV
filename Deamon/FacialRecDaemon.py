@@ -20,20 +20,7 @@ import imutils
 import numpy as np
 import datetime
 import argparse
-
-DEBUG_STORE_FACES = True
-FACE_DETECT_CONFIDENCE_LEVEL = 0.5
-MIN_SECS_BETWEEN_REKOGNITION_REQS = 3
-FACE_CAPTURE_FOLDER = "../../FaceCaptures"
-
-# Arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("--videoSource", help="URL for video - must be valid in opencv", required=True)
-ap.add_argument("--frontDoorURL", help="URL for front door", required=True)
-args = vars(ap.parse_args())
-
-VIDEO_SOURCE = args["videoSource"]
-FRONT_DOOR_URL = args["frontDoorURL"]
+import configparser
 
 ####################################
 # Door control
@@ -326,6 +313,36 @@ if __name__ == "__main__":
 
     # Setup logging
     logging.basicConfig(format='%(asctime)s %(message)s', level=logging.INFO)
+
+    DEBUG_STORE_FACES = True
+    FACE_DETECT_CONFIDENCE_LEVEL = 0.5
+    MIN_SECS_BETWEEN_REKOGNITION_REQS = 3
+
+    # Config
+    config = configparser.ConfigParser()
+    filesRead = config.read("config.ini")
+    logging.info(f"Read config file {filesRead}")
+    VIDEO_SOURCE = config["DEFAULT"]["videoSource"]
+    FRONT_DOOR_URL = config["DEFAULT"]["frontDoorURL"]
+    FACE_CAPTURE_FOLDER = config["DEFAULT"]["faceCaptureFolder"]
+
+    # Arguments
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--videoSource", help="URL for video - must be valid in opencv", required=False)
+    ap.add_argument("--frontDoorURL", help="URL for front door", required=False)
+    ap.add_argument("--faceCaptureFolder", help="folder for facial captures - a visual log", required=False)
+    args = vars(ap.parse_args())
+
+    if ("videoSource" in args) and (args["videoSource"] is not None):
+        VIDEO_SOURCE = args["videoSource"]
+    if ("frontDoorURL" in args) and (args["frontDoorURL"] is not None):
+        FRONT_DOOR_URL = args["frontDoorURL"]
+    if ("faceCaptureFolder" in args) and (args["faceCaptureFolder"] is not None):
+        FACE_CAPTURE_FOLDER = args["faceCaptureFolder"]
+
+    logging.info(f"VideoSource {VIDEO_SOURCE}")
+    logging.info(f"FrontDoorURL {FRONT_DOOR_URL}")
+    logging.info(f"FaceCaptureFolder {FACE_CAPTURE_FOLDER}")
 
     # Setup Amazon services
     rekognition = boto3.client('rekognition', region_name='eu-west-1')
