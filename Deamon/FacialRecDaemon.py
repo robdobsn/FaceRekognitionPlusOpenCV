@@ -93,11 +93,14 @@ class FaceGrabber():
             # grab the frame from the threaded video stream
             frame = vs.read()[1]
 
-            # resize the frame to have a width of 600 pixels (while
+            # resize the frame to have a width of 800 pixels (while
             # maintaining the aspect ratio), and then grab the image
             # dimensions
-            frame = imutils.resize(frame, width=600)
+            # print("Original image h,w", frame.shape[:2])
+            frame = imutils.resize(frame, width=800)
+            frame = imutils.rotate_bound(frame, 270)
             (h, w) = frame.shape[:2]
+            # print("Resized image h,w", h, w)
 
             # construct a blob from the image
             imageBlob = cv2.dnn.blobFromImage(
@@ -261,9 +264,11 @@ class FaceRecogniser():
             )
         except rekognition.exceptions.InvalidParameterException as excp:
             logging.warning(f"recogniseFaces: InvalidParameterException searching for faces ..., {str(excp)}")
+            self.renameFaceFile(newFaceName, "InvalidParam")
             return None
         except Exception as excp:
             logging.warning(f"recogniseFaces: Exception searching for faces ..., {str(excp)}")
+            self.renameFaceFile(newFaceName, "OtherExcp")
             return None
 
         person = "ZeroMatches"
