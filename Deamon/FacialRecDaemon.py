@@ -21,6 +21,7 @@ import numpy as np
 import datetime
 import argparse
 import configparser
+from pathlib import Path
 
 ####################################
 # Door control
@@ -330,6 +331,9 @@ if __name__ == "__main__":
     VIDEO_SOURCE = config["DEFAULT"]["videoSource"]
     FRONT_DOOR_URL = config["DEFAULT"]["frontDoorURL"]
     FACE_CAPTURE_FOLDER = config["DEFAULT"]["faceCaptureFolder"]
+
+    # Create folders if they don't exist
+    Path(FACE_CAPTURE_FOLDER).mkdir(parents=True, exist_ok=True)
 
     # Arguments
     ap = argparse.ArgumentParser()
