@@ -160,7 +160,7 @@ def dynamoDBCreateTable(table_name):
             'StreamEnabled': False
         }
     )
-    if table["ResponseMetadata"]["HTTPStatusCode"] is not 200:
+    if table["ResponseMetadata"]["HTTPStatusCode"] != 200:
         return False
     # Need to wait here until creation is complete - sleep seems to speed things up :)
     time.sleep(2.0)
